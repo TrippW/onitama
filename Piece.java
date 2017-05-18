@@ -1,10 +1,12 @@
 public class Piece
 {
- protected Coordinate coord;
- protected int color;
+ private Coordinate coord;
+ private int color;
+ private boolean isKing;
 
- public Piece(Coordinate c, int col)
+ public Piece(Coordinate c, int col, boolean isKing)
  {
+  this.isKing = isKing;
   coord = c;
   color = col;
  }
@@ -24,16 +26,16 @@ public class Piece
   return color;
  }
 
+ public boolean isKing()
+ {
+  return isKing;
+ }
+
  public String getStringColor()
  {
   String col = "Blue";
   if(color == Board.red) col = "Red";
   return col;
- }
-
- public String getType()
- {
-  return getStringColor()+" Pawn";
  }
 
 }
