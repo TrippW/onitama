@@ -3,12 +3,16 @@ import javax.swing.JFrame;
 
 public class Board
 {
- public int red  = 1;
- public int blue = -1;
+ public static int red  = 1;
+ public static int blue = -1;
 
  private JFrame frame;
 
- private int board [][] = new int[5][5];
+ private int simpleboard [][] = new int[5][5];
+ private Piece board [][] = new Piece[5][5];
+
+ private boolean containsBlueKing = true;
+ private boolean containsRedKing  = true;
 
  public Card boardCard;
 
@@ -17,12 +21,13 @@ public class Board
   boardCard = inbetween;
   for(int i = 0; i < 5; i++)
   {
-   board[0][i] = red;
-   board[4][i] = blue;
+   if(i == 2) continue;
+   board[0][i] = new Piece(new Coordinate(i,0), red);
+   board[4][i] = new Piece(new Coordinate(i,4), blue);
   }
 
-  board[0][2] *= 2;
-  board[4][2] *= 2;
+  board[0][2] = new King(new Coordinate(2,0), red);
+  board[4][2] = new King(new Coordinate(2,4), blue);
 
   initFrame();
  }
@@ -39,7 +44,9 @@ public class Board
   frame.setVisible(true);
  }
 
- public int[][] getBoard(){ return board;}
+ public int[][] getSimpleBoard(){ return simpleboard;}
+
+ public Piece[][] getBoard(){ return board;}
 
  public Card exchange(Card c)
  {
@@ -50,10 +57,18 @@ public class Board
 
  public boolean checkWin()
  {
-  //if
-  if(board[0][2] == red*2 || board[4][2] == blue*2)
+  if(board[0][2] != null && board[0][2].getType() == "Blue King")
    return true;
-  return false;
+  if(board[4][2] != null && board[4][2].getType() == "Red King")
+   return true;
+
+  return !(containsBlueKing && containsRedKing);
+
+ }
+
+ public void move(Card used, Player p, Coordinate from, Coordinate to)
+ {
+  
  }
 
 }
