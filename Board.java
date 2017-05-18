@@ -51,7 +51,7 @@ public class Board
  public boolean checkWin()
  {
   //if
-  if(board[0][2] == RED*2 || board[4][2] == BLUE*2)
+  if(board[0][2] == red*2 || board[4][2] == blue*2)
    return true;
   return false;
  }
