@@ -1,8 +1,8 @@
 public class Player
 {
- Card[] cards;
- Board board;
- int color;
+ private Card[] cards;
+ private Board board;
+ private int color;
 
  public Player(Card[] moves, boolean isComputer, int playerColor)
  {
@@ -19,4 +19,17 @@ public class Player
  {
   return cards[selectedCard].moves[option];
  }
+
+ public int getColor()
+ {
+  return color;
+ }
+
+ public String getColorString()
+ {
+  String col = "Blue";
+  if(color == Board.red) col = "Red";
+  return col;
+ }
+
 }

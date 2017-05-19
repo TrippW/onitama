@@ -38,8 +38,6 @@ public class Board
    board[0][i] = new Piece(new Coordinate(i,0), red, i == 2);
    board[4][i] = new Piece(new Coordinate(i,4), blue, i == 2);
   }
-
-  //initFrame();
  }
 
  public Card getBoardCard()

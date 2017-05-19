@@ -10,21 +10,29 @@ public class Onitama
 
  public Onitama()
  {
-  GUI g = new GUI();
 
   Card cards[] = Deck.draw();
   Player p1 = new Player(new Card[]{cards[0],cards[3]}, false, Board.red);
   Player p2 = new Player(new Card[]{cards[1],cards[4]}, false, Board.blue);
 
-  Board b = new Board(cards[2], p1, p2);
+  Board board = null;
 
-  p1.setBoard(b);
-  p2.setBoard(b);
+  if(cards[2].getColor() == Board.red)
+   board = new Board(cards[2], p1, p2);
+  else
+   board = new Board(cards[2], p2, p1);
 
-  while(b.checkWin() && false)
+  GUI g = new GUI(cards, board.getCurrentPlayer());
+
+  g.initGUIBoard(board.getBoard());
+
+  p1.setBoard(board);
+  p2.setBoard(board);
+
+  while(board.checkWin() && false)
   {
-   b.move(b.getMove());
-   b.switchPlayer();
+   board.move(board.getMove());
+   board.switchPlayer();
   }
 
   for(int i = 0;i < cards.length;i++)
