@@ -56,13 +56,13 @@ public class GUI
   board = new JPanel();
   board.setLayout(new GridLayout(5,5));
 
-  red1 = new JLabel(list[1].name);
-  red2 = new JLabel(list[4].name);
+  red1 = new JLabel(list[1].name, SwingConstants.CENTER);
+  red2 = new JLabel(list[4].name, SwingConstants.CENTER);
 
-  blue1 = new JLabel(list[0].name);
-  blue2 = new JLabel(list[3].name);
+  blue1 = new JLabel(list[0].name, SwingConstants.CENTER);
+  blue2 = new JLabel(list[3].name, SwingConstants.CENTER);
 
-  tableCard = new JLabel(list[2].name);
+  tableCard = new JLabel(list[2].name, SwingConstants.CENTER);
 
 
   for(int i = 0; i < 5; i++)
@@ -71,7 +71,7 @@ public class GUI
    {
     int width = 50, height = 50;
 
-    JLabel label = new JLabel(" ");
+    JLabel label = new JLabel(" ", SwingConstants.CENTER);
     label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     label.setMinimumSize(new Dimension(width, height));
     label.setPreferredSize(new Dimension(width, height));
@@ -84,7 +84,7 @@ public class GUI
   }
 
   cards.add(blue1);
-  cards.add(new JLabel("< Red's Hand >"));
+  cards.add(new JLabel("< Red's Hand >", SwingConstants.CENTER));
   cards.add(blue2);
 
   cards.add(new JLabel(""));
@@ -92,7 +92,7 @@ public class GUI
   cards.add(new JLabel(""));
 
   cards.add(red1);
-  cards.add(new JLabel("< Blue's Hand >"));
+  cards.add(new JLabel("< Blue's Hand >", SwingConstants.CENTER));
   cards.add(red2);
 
   GridBagConstraints gbc = new GridBagConstraints();
