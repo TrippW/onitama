@@ -1,7 +1,9 @@
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 
-public class GUI
+public class GUI implements MouseListener
 {
  JFrame frame;
  JPanel main, cards, board;
@@ -12,12 +14,13 @@ public class GUI
 
  JLabel [][] lblBoard = new JLabel[5][5];
 
+ Component lastCardHighlighted = null;
+
  public GUI(Card [] list, Player p)
  {
   curPlayer = new JLabel(p.getColorString());
   initFrame(list);
  }
-
 
  public void initGUIBoard(Piece [][] allPieces)
  {
@@ -41,7 +44,7 @@ public class GUI
      lblBoard[y][x].setBackground(Color.RED);
 
    }
-  }
+ }
 
  private void initFrame(Card [] list)
  {
@@ -56,13 +59,33 @@ public class GUI
   board = new JPanel();
   board.setLayout(new GridLayout(5,5));
 
+//create card labels
   red1 = new JLabel(list[1].name, SwingConstants.CENTER);
   red2 = new JLabel(list[4].name, SwingConstants.CENTER);
-
   blue1 = new JLabel(list[0].name, SwingConstants.CENTER);
   blue2 = new JLabel(list[3].name, SwingConstants.CENTER);
-
   tableCard = new JLabel(list[2].name, SwingConstants.CENTER);
+
+//set opaque
+  red1.setOpaque(true);
+  red2.setOpaque(true);
+  tableCard.setOpaque(true);
+  blue1.setOpaque(true);
+  blue2.setOpaque(true);
+
+//set color
+  red1.setBackground(Color.WHITE);
+  red2.setBackground(Color.WHITE);
+  tableCard.setBackground(Color.WHITE);
+  blue1.setBackground(Color.WHITE);
+  blue2.setBackground(Color.WHITE);
+
+//add card labels mouse listener
+  red1.addMouseListener(this);
+  red2.addMouseListener(this);
+  tableCard.addMouseListener(this);
+  blue1.addMouseListener(this);
+  blue2.addMouseListener(this);
 
 
   for(int i = 0; i < 5; i++)
@@ -83,17 +106,17 @@ public class GUI
    }
   }
 
-  cards.add(blue1);
+  cards.add(red1);
   cards.add(new JLabel("< Red's Hand >", SwingConstants.CENTER));
-  cards.add(blue2);
+  cards.add(red2);
 
   cards.add(new JLabel(""));
   cards.add(tableCard);
   cards.add(new JLabel(""));
 
-  cards.add(red1);
+  cards.add(blue1);
   cards.add(new JLabel("< Blue's Hand >", SwingConstants.CENTER));
-  cards.add(red2);
+  cards.add(blue2);
 
   GridBagConstraints gbc = new GridBagConstraints();
   gbc.gridwidth = 1;
@@ -133,4 +156,36 @@ public class GUI
   frame.setVisible(true);
  }
 
+ public void mouseExited(MouseEvent e)
+ {
+
+ }
+ public void mouseEntered(MouseEvent e)
+ {
+
+ }
+ public void mouseReleased(MouseEvent e)
+ {
+ }
+ public void mousePressed(MouseEvent e)
+ {
+ }
+
+ public void mouseClicked(MouseEvent e)
+ {
+  if(e.getComponent().getParent() == cards)
+  {
+   if(curPlayer.getText().equals("Red"))
+    if(e.getComponent() != red1 && e.getComponent() != red2) return;
+
+   if(curPlayer.getText().equals("Blue"))
+    if(e.getComponent() != blue1 && e.getComponent() != blue2) return;
+
+   if(lastCardHighlighted != null)
+    lastCardHighlighted.setBackground(Color.WHITE);
+
+   e.getComponent().setBackground(Color.YELLOW);
+   lastCardHighlighted = e.getComponent();
+  }
+ }
 }
