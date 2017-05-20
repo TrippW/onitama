@@ -112,6 +112,9 @@ public class Board
 
   board[to.getY()][to.getX()] = board[from.getY()][from.getX()];
   board[from.getY()][from.getX()] = null;
+
+  switchPlayer();
+
  }
 
 }
