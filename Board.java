@@ -38,6 +38,7 @@ public class Board
    board[0][i] = new Piece(new Coordinate(i,0), red, i == 2);
    board[4][i] = new Piece(new Coordinate(i,4), blue, i == 2);
   }
+
  }
 
  public Card getBoardCard()
@@ -64,6 +65,16 @@ public class Board
 
  public Piece[][] getBoard(){ return board;}
 
+ public Piece getPiece(int x, int y)
+ {
+  return board[y][x];
+ }
+
+ public Piece getPiece(Coordinate c)
+ {
+  return getPiece(c.getX(),c.getY());
+ }
+
  public Card exchange(Card c)
  {
   Card temp = boardCard;
@@ -86,12 +97,12 @@ public class Board
   return new Coordinate[]{new Coordinate(0,0), new Coordinate(1,1)};
  }
 
- public void move(Coordinate [] play)
+ public void play(Coordinate [] play)
  {
-  move(play[0],play[1]);
+  play(play[0],play[1]);
  }
 
- public void move(Coordinate from, Coordinate to)
+ public void play(Coordinate from, Coordinate to)
  {
   if(board[to.getY()][to.getX()] != null && board[to.getY()][to.getX()].isKing() && board[to.getY()][to.getX()].getColor() != board[from.getY()][from.getX()].getColor())
    if(board[to.getY()][to.getX()].getColor() == blue)

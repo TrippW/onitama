@@ -15,17 +15,21 @@ public class GUI implements MouseListener
  JLabel [][] lblBoard = new JLabel[5][5];
 
  Component lastCardHighlighted = null;
+ Component selectedPawn = null;
 
- public GUI(Card [] list, Player p)
+ Board gameBoard;
+
+ public GUI(Card [] list, Board b)
  {
-  curPlayer = new JLabel(p.getColorString());
+  gameBoard = b;
+  curPlayer = new JLabel(b.getCurrentPlayer().getColorString());
   initFrame(list);
  }
 
- public void initGUIBoard(Piece [][] allPieces)
+ public void initGUIBoard()
  {
 
-  for(Piece [] pRow : allPieces)
+  for(Piece [] pRow : gameBoard.getBoard())
    for(Piece p : pRow)
    {
     if(p == null) continue;
@@ -94,12 +98,13 @@ public class GUI implements MouseListener
    {
     int width = 50, height = 50;
 
-    JLabel label = new JLabel(" ", SwingConstants.CENTER);
+    JLabel label = new JLabel("", SwingConstants.CENTER);
     label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     label.setMinimumSize(new Dimension(width, height));
     label.setPreferredSize(new Dimension(width, height));
     label.setMaximumSize(new Dimension(width, height));
     label.setOpaque(true);
+    label.addMouseListener(this);
 
     lblBoard[i][j] = label;
     board.add(label);
@@ -175,17 +180,198 @@ public class GUI implements MouseListener
  {
   if(e.getComponent().getParent() == cards)
   {
-   if(curPlayer.getText().equals("Red"))
-    if(e.getComponent() != red1 && e.getComponent() != red2) return;
-
-   if(curPlayer.getText().equals("Blue"))
-    if(e.getComponent() != blue1 && e.getComponent() != blue2) return;
-
-   if(lastCardHighlighted != null)
-    lastCardHighlighted.setBackground(Color.WHITE);
-
-   e.getComponent().setBackground(Color.YELLOW);
-   lastCardHighlighted = e.getComponent();
+   selectCard(e);
   }
+
+  if(e.getComponent().getParent() == board)
+  {
+   if(selectedPawn != null && e.getComponent().getBackground()==Color.YELLOW)
+   {
+    Coordinate from = null;
+    Coordinate to = null;
+
+    for(int x = 0; x < 5; x++)
+     for(int y = 0; y < 5; y++)
+     {
+      if(lblBoard[y][x] == selectedPawn)
+       from = new Coordinate(x,y);
+      if(lblBoard[y][x] == e.getComponent())
+       to = new Coordinate(x,y);
+     }
+    gameBoard.play(from, to);
+    move(from,to);
+    selectedPawn = null;
+   }
+   else
+   {
+    if((e.getComponent().getBackground() == Color.RED && curPlayer.getText().equals("Red")) || (e.getComponent().getBackground() == Color.BLUE && curPlayer.getText().equals("Blue")))
+     highlightMoves(e);
+   }
+  }
+ }
+
+ private void selectCard(MouseEvent e)
+ {
+  if(curPlayer.getText().equals("Red"))
+   if(e.getComponent() != red1 && e.getComponent() != red2) return;
+
+  if(curPlayer.getText().equals("Blue"))
+   if(e.getComponent() != blue1 && e.getComponent() != blue2) return;
+
+  unhighlightCard();
+
+  e.getComponent().setBackground(Color.YELLOW);
+
+  if(selectedPawn != null && lastCardHighlighted != null)
+   unhighlightMoves();
+
+  lastCardHighlighted = e.getComponent();
+
+  if(selectedPawn != null)
+   highlightMoves(selectedPawn);
+ }
+
+ private void unhighlightCard()
+ {
+  if(lastCardHighlighted != null)
+   lastCardHighlighted.setBackground(Color.WHITE);
+ }
+
+ private void unhighlightMoves()
+ {
+  if(lastCardHighlighted == null)
+  {
+   System.out.println("Unhighlighted error: no card selected");
+   return;
+  }
+
+  Coordinate from = null;
+
+  for(int x = 0; x < 5; x++)
+   for(int y = 0; y < 5; y++)
+    if(lblBoard[y][x] == selectedPawn)
+    {
+     from = new Coordinate(x,y);
+     x=7;
+     break;
+    }
+
+  if(from == null)
+  {
+   System.out.println("Unhighlighted error: no pawn selected");
+   return;
+  }
+
+  if(lastCardHighlighted == null)
+  {
+   System.out.println("Unhighlighted error: no card selected");
+   return;
+  }
+
+  for(int [] pair : Card.getCardByName(((JLabel)lastCardHighlighted).getText()).moves)
+  {
+   int newX = pair[0]*gameBoard.getCurrentPlayer().getColor()+from.getX();
+   int newY = pair[1]*gameBoard.getCurrentPlayer().getColor()+from.getY();
+
+   if(newX >= 0 && newX < 5 && newY >= 0 && newY < 5)
+    if(lblBoard[newY][newX].getBackground() != lblBoard[from.getY()][from.getX()].getBackground())
+    {
+     if(lblBoard[newY][newX].getText().equals(""))
+      lblBoard[newY][newX].setBackground(Color.WHITE);
+     else
+     {
+      if(gameBoard.getCurrentPlayer().getColor() == Board.red)
+       lblBoard[newY][newX].setBackground(Color.BLUE);
+      else
+       lblBoard[newY][newX].setBackground(Color.RED);
+     }
+    }
+  }
+ }
+
+ private void highlightMoves(MouseEvent e)
+ {
+  highlightMoves(e.getComponent());
+ }
+
+ private void highlightMoves(Component c)
+ {
+  if(selectedPawn != null)
+   unhighlightMoves();
+
+  selectedPawn = c;
+  Coordinate from = null;
+
+  for(int x = 0; x < 5; x++)
+   for(int y = 0; y < 5; y++)
+    if(lblBoard[y][x] == selectedPawn)
+    {
+     from = new Coordinate(x,y);
+     x=7;
+     break;
+    }
+  if(from == null)
+  {
+   System.out.println("Highlighted error: no pawn selected");
+   selectedPawn = null;
+   return;
+  }
+
+  System.out.println("Moves are to :");
+
+  if(lastCardHighlighted == null)
+  {
+   selectedPawn = null;
+   System.out.println("Highlighted error: no card selected");
+   return;
+  }
+
+  for(int [] pair : Card.getCardByName(((JLabel)lastCardHighlighted).getText()).moves)
+  {
+   int newX = pair[0]*gameBoard.getCurrentPlayer().getColor()+from.getX();
+   int newY = pair[1]*gameBoard.getCurrentPlayer().getColor()+from.getY();
+   if(newX >= 0 && newX < 5 && newY >= 0 && newY < 5)
+    if(lblBoard[newY][newX].getBackground() != lblBoard[from.getY()][from.getX()].getBackground())
+     lblBoard[newY][newX].setBackground(Color.YELLOW);
+  }
+ }
+
+ private void move(Coordinate from, Coordinate to)
+ {
+  unhighlightMoves();
+  unhighlightCard();
+
+  lblBoard[to.getY()][to.getX()].setText(lblBoard[from.getY()][from.getX()].getText());
+  lblBoard[to.getY()][to.getX()].setBackground(lblBoard[from.getY()][from.getX()].getBackground());
+
+  lblBoard[from.getY()][from.getX()].setText("");
+  lblBoard[from.getY()][from.getX()].setBackground(Color.WHITE);
+
+  switchPlayers();
+  switchCard();
+ }
+
+ private void switchCard()
+ {
+  String temp = ((JLabel)lastCardHighlighted).getText();
+
+  if(lastCardHighlighted == red1)
+   red1.setText(tableCard.getText());
+  if(lastCardHighlighted == red2)
+   red2.setText(tableCard.getText());
+  if(lastCardHighlighted == blue1)
+   blue1.setText(tableCard.getText());
+  if(lastCardHighlighted == blue2)
+   blue2.setText(tableCard.getText());
+
+  tableCard.setText(temp);
+ }
+
+ private void switchPlayers()
+ {
+  if(curPlayer.getText().equals("Red"))
+   curPlayer.setText("Blue");
+  else
+   curPlayer.setText("Red");
  }
 }

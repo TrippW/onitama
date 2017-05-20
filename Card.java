@@ -50,4 +50,12 @@ public class Card
   return col;
  }
 
+ public static Card getCardByName(String name)
+ {
+  for(Card c : allCards)
+   if(c.name == name)
+    return c;
+  return null;
+ }
+
 }

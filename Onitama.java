@@ -22,16 +22,16 @@ public class Onitama
   else
    board = new Board(cards[2], p2, p1);
 
-  GUI g = new GUI(cards, board.getCurrentPlayer());
+  GUI g = new GUI(cards, board);
 
-  g.initGUIBoard(board.getBoard());
+  g.initGUIBoard();
 
   p1.setBoard(board);
   p2.setBoard(board);
 
   while(board.checkWin() && false)
   {
-   board.move(board.getMove());
+   board.play(board.getMove());
    board.switchPlayer();
   }
 
