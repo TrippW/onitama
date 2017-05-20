@@ -365,6 +365,7 @@ public class GUI implements MouseListener
    blue2.setText(tableCard.getText());
 
   tableCard.setText(temp);
+  lastCardHighlighted = null;
  }
 
  private void switchPlayers()
