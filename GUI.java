@@ -110,6 +110,7 @@ public class GUI implements MouseListener
     label.setMaximumSize(new Dimension(width, height));
     label.setOpaque(true);
     label.addMouseListener(this);
+    label.setBackground(Color.WHITE);
 
     lblBoard[i][j] = label;
     board.add(label);
