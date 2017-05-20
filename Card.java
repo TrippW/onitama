@@ -17,13 +17,13 @@ public class Card
   Card rabbit   = new Card(new int[][]{{1,1},  {-1,-1}, {2,0}}         ,"Rabbit", Board.blue);
   Card crab     = new Card(new int[][]{{2,0},  {-2,0},  {0,1}}         ,"Crab", Board.blue);
   Card elephant = new Card(new int[][]{{1,0},  {-1,0},  {1,1},  {-1,1}},"Elephant", Board.red);
-  Card goose    = new Card(new int[][]{{1,1}, {-1,-1},  {-1,0}, {1,0}} ,"Goose", Board.blue);
-  Card rooster  = new Card(new int[][]{{-1,1},  {1,-1}, {-1,0}, {1,0}} ,"Rooster", Board.red);
+  Card goose    = new Card(new int[][]{{-1,1}, {1,-1},  {-1,0}, {1,0}} ,"Goose", Board.blue);
+  Card rooster  = new Card(new int[][]{{-1,-1},{1,1},   {-1,0}, {1,0}} ,"Rooster", Board.red);
   Card monkey   = new Card(new int[][]{{1,1},  {-1,-1}, {1,-1}, {-1,1}},"Monkey", Board.blue);
   Card mantis   = new Card(new int[][]{{0,-1}, {-1,1},  {1,1}}         ,"Mantis", Board.red);
   Card horse    = new Card(new int[][]{{-1,0}, {0,1},   {0,-1}}        ,"Horse", Board.red);
-  Card ox       = new Card(new int[][]{{0,1},  {0,-1},  {-1,0}}        ,"Ox", Board.blue);
-  Card crane    = new Card(new int[][]{{-1,-1}, {1,-1}, {0,1}}         ,"Crane", Board.blue);
+  Card ox       = new Card(new int[][]{{1,0},  {0,1},   {0,-1}}        ,"Ox", Board.blue);
+  Card crane    = new Card(new int[][]{{-1,-1},{1,-1},  {0,1}}         ,"Crane", Board.blue);
   Card boar     = new Card(new int[][]{{-1,0}, {1,0},   {0,1}}         ,"Boar", Board.red);
   Card eel      = new Card(new int[][]{{-1,1}, {-1,-1}, {1,0}}         ,"Eel", Board.blue);
   Card cobra    = new Card(new int[][]{{1,1},  {1,-1},  {-1,0}}        ,"Cobra", Board.red);
