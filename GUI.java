@@ -13,24 +13,34 @@ public class GUI implements MouseListener
 
   JPanel movePanel;
 
+  int color;
+
   GridBagLayout gridbag = new GridBagLayout();
   GridBagConstraints gbc = new GridBagConstraints();
 
   public CardGUI(CardGUI cg)
   {
+   this(cg, cg.getColor());
+  }
+
+  public CardGUI(CardGUI cg, int color)
+  {
    init();
+   this.color = color;
    set(cg);
   }
 
-  public CardGUI(Card c)
+  public CardGUI(Card c, int color)
   {
    init();
+
+   this.color = color;
 
    name.setText(c.getName());
 
    for(int[] m : c.getMoves())
    {
-    int x = 2+m[0], y = 2+m[1]*-1;
+    int x = 2+m[0]*color*-1, y = 2+m[1]*color;
     moves[y][x].setBackground(Color.YELLOW);
    }
    gbc = new GridBagConstraints();
@@ -87,6 +97,13 @@ public class GUI implements MouseListener
      moves[y][x].setBackground(mp[y][x].getBackground());
   }
 
+  public void swap(JLabel [][] mp)
+  {
+   for(int y = 0; y < 5; y++)
+    for(int x = 0; x < 5; x++)
+     moves[y][x].setBackground(mp[4-y][4-x].getBackground());
+  }
+
   public JLabel[][] getMoves()
   {
    return moves;
@@ -97,10 +114,25 @@ public class GUI implements MouseListener
    return name.getText();
   }
 
+  public void set(CardGUI cg, int color)
+  {
+   set(cg);
+   this.color = color;
+  }
+
   public void set(CardGUI cg)
   {
    setText(cg.getText());
-   setMoves(cg.getMoves());
+   if(color != cg.getColor())
+    swap(cg.getMoves());
+   else
+    setMoves(cg.getMoves());
+   color = cg.getColor();
+  }
+
+  public int getColor()
+  {
+   return color;
   }
  }
 
@@ -168,27 +200,12 @@ public class GUI implements MouseListener
   board.setLayout(new GridLayout(5,5));
 
 //create card labels
-  red1 = new CardGUI(list[1]);//JLabel(list[1].name, SwingConstants.CENTER);
-  red2 = new CardGUI(list[4]);//.name, SwingConstants.CENTER);
-  blue1 = new CardGUI(list[0]);//.name, SwingConstants.CENTER);
-  blue2 = new CardGUI(list[3]);//.name, SwingConstants.CENTER);
-  tableCard = new CardGUI(list[2]);//.name, SwingConstants.CENTER);
+  red1 = new CardGUI(list[1], Board.red);
+  red2 = new CardGUI(list[4], Board.red);
+  blue1 = new CardGUI(list[0], Board.blue);
+  blue2 = new CardGUI(list[3], Board.blue);
+  tableCard = new CardGUI(list[2], Board.blue);
 
-/*
-//set opaque
-  red1.setOpaque(true);
-  red2.setOpaque(true);
-  tableCard.setOpaque(true);
-  blue1.setOpaque(true);
-  blue2.setOpaque(true);
-
-//set color
-  red1.setBackground(Color.WHITE);
-  red2.setBackground(Color.WHITE);
-  tableCard.setBackground(Color.WHITE);
-  blue1.setBackground(Color.WHITE);
-  blue2.setBackground(Color.WHITE);
-*/
 //add card labels mouse listener
   red1.addMouseListener(this);
   red2.addMouseListener(this);
@@ -435,8 +452,6 @@ public class GUI implements MouseListener
    return;
   }
 
-  System.out.println("Moves are to :");
-
   for(int [] pair : Card.getCardByName(((CardGUI)lastCardHighlighted).getText()).moves)
   {
    int newX = pair[0]*gameBoard.getCurrentPlayer().getColor()*-1+from.getX();
@@ -469,20 +484,19 @@ System.exit(2);
   }
   CardGUI temp = new CardGUI((CardGUI) lastCardHighlighted);
   CardGUI tc   = (CardGUI) tableCard;
-
   if(lastCardHighlighted == red1)
-   ((CardGUI) red1).set(tc);
+   ((CardGUI) red1).set(tc,Board.red);
 
   if(lastCardHighlighted == red2)
-   ((CardGUI) red2).set(tc);
+   ((CardGUI) red2).set(tc,Board.red);
 
   if(lastCardHighlighted == blue1)
-   ((CardGUI) blue1).set(tc);
+   ((CardGUI) blue1).set(tc,Board.blue);
 
   if(lastCardHighlighted == blue2)
-   ((CardGUI) blue2).set(tc);
+   ((CardGUI) blue2).set(tc,Board.blue);
 
-  ((CardGUI)tableCard).set(temp);
+  ((CardGUI)tableCard).set(temp,Board.blue);
   lastCardHighlighted = null;
  }
 
