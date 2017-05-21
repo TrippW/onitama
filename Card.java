@@ -38,6 +38,16 @@ public class Card
   allCards.add(this);
  }
 
+ public int [][] getMoves()
+ {
+  return moves;
+ }
+
+ public String getName()
+ {
+  return name;
+ }
+
  public int getColor()
  {
   return color;
@@ -59,3 +69,4 @@ public class Card
  }
 
 }
+
