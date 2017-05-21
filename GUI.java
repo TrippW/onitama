@@ -52,6 +52,8 @@ public class GUI implements MouseListener
 
   private void init()
   {
+   setBackground(Color.WHITE);
+
    gridbag = new GridBagLayout();
    gbc = new GridBagConstraints();
 
@@ -188,7 +190,7 @@ public class GUI implements MouseListener
 
  private void initFrame(Card [] list)
  {
-  frame = new JFrame("Oniama");
+  frame = new JFrame("Onitama");
 
   GridBagLayout gridbag = new GridBagLayout();
 
@@ -199,6 +201,8 @@ public class GUI implements MouseListener
   board = new JPanel();
   board.setLayout(new GridLayout(5,5));
 
+  cards.setOpaque(true);
+  cards.setBackground(Color.WHITE);
 //create card labels
   red1 = new CardGUI(list[1], Board.red);
   red2 = new CardGUI(list[4], Board.red);
