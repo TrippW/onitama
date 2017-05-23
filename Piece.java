@@ -11,6 +11,13 @@ public class Piece
   color = col;
  }
 
+ public Piece(Piece p)
+ {
+  isKing = p.isKing();
+  color = p.getColor();
+  coord = new Coordinate(p.getCoord());
+ }
+
  public Coordinate getCoord()
  {
   return coord;
