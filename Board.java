@@ -18,7 +18,9 @@ public class Board
  public Board(Board b)
  {
   this.boardCard = b.getBoardCard();
-  this.board = b.getBoard();
+  for(int i = 0; i < 25; i++)
+   this.board[i/5][i%5] = new Piece(b.getBoard()[i/5][i%5]);
+
   this.curPlayer = getCurrentPlayer();
   this.offPlayer = getOffPlayer();
  }
@@ -130,6 +132,11 @@ public class Board
     System.out.printf("|%2s ",(board[i][j] == null)?"":(board[i][j].getColor() == red)? "r":"b");
    System.out.println("|");
   }
+ }
+
+ public Board copy()
+ {
+  return new Board(this);
  }
 
 }
