@@ -29,12 +29,6 @@ public class Onitama
   p1.setBoard(board);
   p2.setBoard(board);
 
-  while(board.checkWin() && false)
-  {
-   board.play(board.getMove());
-   board.switchPlayer();
-  }
-
   for(int i = 0;i < cards.length;i++)
    System.out.println(cards[i].name);
 
