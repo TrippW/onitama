@@ -1,14 +1,10 @@
 import java.awt.*;
-import javax.swing.JFrame;
 
 public class Board
 {
  public static int red  = 1;
  public static int blue = -1;
 
-// private JFrame frame;
-
-// private int simpleboard [][] = new int[5][5];
  private Piece board [][] = new Piece[5][5];
 
  private boolean containsBlueKing = true;
@@ -35,7 +31,7 @@ public class Board
 
   for(int i = 0; i < 5; i++)
   {
-   board[0][i] = new Piece(new Coordinate(i,0), red, i == 2);
+   board[0][i] = new Piece(new Coordinate(i,0),  red, i == 2);
    board[4][i] = new Piece(new Coordinate(i,4), blue, i == 2);
   }
 
@@ -61,6 +57,20 @@ public class Board
   Player temp = curPlayer;
   curPlayer = offPlayer;
   offPlayer = temp;
+ }
+
+ public boolean isComputerTurn()
+ {
+  return curPlayer.isComputer();
+ }
+
+ public void computerTurn()
+ {
+  if(curPlayer.isComputer())
+  {
+   Coordinate [] moves = curPlayer.getMove();
+   play(moves);
+  }
  }
 
  public Piece[][] getBoard(){ return board;}
@@ -92,11 +102,6 @@ public class Board
   return !(containsBlueKing && containsRedKing);
  }
 
- public Coordinate[] getMove()
- {
-  return new Coordinate[]{new Coordinate(0,0), new Coordinate(1,1)};
- }
-
  public void play(Coordinate [] play)
  {
   play(play[0],play[1]);
@@ -104,17 +109,27 @@ public class Board
 
  public void play(Coordinate from, Coordinate to)
  {
-  if(board[to.getY()][to.getX()] != null && board[to.getY()][to.getX()].isKing() && board[to.getY()][to.getX()].getColor() != board[from.getY()][from.getX()].getColor())
-   if(board[to.getY()][to.getX()].getColor() == blue)
+  if(getPiece(to) != null && getPiece(to).isKing() && getPiece(to).getColor() != getPiece(from).getColor())
+   if(getPiece(to).getColor() == blue)
     containsBlueKing = false;
    else
     containsRedKing = false;
-
-  board[to.getY()][to.getX()] = board[from.getY()][from.getX()];
+//  getPiece(to) = getPiece(from);
+  board[to.getY()][to.getX()] = getPiece(from);//board[from.getY()][from.getX()];
   board[from.getY()][from.getX()] = null;
 
   switchPlayer();
+//  printBoard();
+ }
 
+ public void printBoard()
+ {
+  for(int i = 0; i < 5; i++)
+  {
+   for(int j = 0; j < 5; j++)
+    System.out.printf("|%2s ",(board[i][j] == null)?"":(board[i][j].getColor() == red)? "r":"b");
+   System.out.println("|");
+  }
  }
 
 }
