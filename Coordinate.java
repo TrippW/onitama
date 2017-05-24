@@ -1,5 +1,8 @@
 public class Coordinate
 {
+ public static final Coordinate blueEnd = new Coordinate(2,4);
+ public static final Coordinate redEnd = new Coordinate(2,4);
+
  private int x,y;
 
  public Coordinate(int x, int y)
@@ -22,6 +25,27 @@ public class Coordinate
   setPair(pair[0],pair[1]);
  }
 
+ public boolean move(int[] move, int color)
+ {
+  return move(move[0], move[1], color);
+ }
+
+ public boolean move(int dx, int dy, int color)
+ {
+  int newX = x;
+  int newY = y;
+
+  newX += dx*-1*color;
+  newY += dy*color;
+
+  if((newX >= 0 && newX < 5) || (newY >= 0 && newY < 5))
+  {
+   setPair(newX, newY);
+   return true; // worked propperly
+  }
+  return false;
+ }
+
  public void setPair(int x, int y)
  {
   try{
@@ -31,6 +55,7 @@ public class Coordinate
   catch(Exception e)
   {
    e.getStackTrace();
+   System.out.println("Problem setting Coordinate pair");
    System.exit(1);
   }
  }
@@ -60,5 +85,15 @@ public class Coordinate
  public int[] getPair()
  {
   return new int[]{x,y};
+ }
+
+ public int compare(Coordinate c)
+ {
+  return (c.getX()-x)*(c.getX()-x)+(c.getY()-y)*(c.getY()-y);
+ }
+
+ public String toString()
+ {
+  return "("+x+","+y+")";
  }
 }
