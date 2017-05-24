@@ -1,7 +1,7 @@
 public class Coordinate
 {
  public static final Coordinate blueEnd = new Coordinate(2,4);
- public static final Coordinate redEnd = new Coordinate(2,4);
+ public static final Coordinate redEnd = new Coordinate(2,0);
 
  private int x,y;
 
@@ -38,7 +38,7 @@ public class Coordinate
   newX += dx*-1*color;
   newY += dy*color;
 
-  if((newX >= 0 && newX < 5) || (newY >= 0 && newY < 5))
+  if((newX >= 0 && newX < 5) && (newY >= 0 && newY < 5))
   {
    setPair(newX, newY);
    return true; // worked propperly
@@ -56,6 +56,7 @@ public class Coordinate
   {
    e.getStackTrace();
    System.out.println("Problem setting Coordinate pair");
+   System.out.printf("x:%d\ty:%d%n",x,y);
    System.exit(1);
   }
  }
