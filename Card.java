@@ -9,24 +9,42 @@ public class Card
 
  public static ArrayList<Card> allCards = new ArrayList<Card>();
 
+ public static Card tiger;
+ public static Card dragon;
+ public static Card frog;
+ public static Card rabbit;
+ public static Card crab;
+ public static Card elephant;
+ public static Card goose;
+ public static Card rooster;
+ public static Card monkey;
+ public static Card mantis;
+ public static Card horse;
+ public static Card ox;
+ public static Card crane;
+ public static Card boar;
+ public static Card eel;
+ public static Card cobra;
+
+
  public static void init()
  {
-  Card tiger    = new Card(new int[][]{{0,2},  {0,-1}}                 ,"Tiger", Board.blue);
-  Card dragon   = new Card(new int[][]{{-2,1}, {-1,-1}, {1,-1}, {2,1}} ,"Dragon", Board.red);
-  Card frog     = new Card(new int[][]{{-2,0}, {-1,1},  {1,-1}}        ,"Frog", Board.red);
-  Card rabbit   = new Card(new int[][]{{1,1},  {-1,-1}, {2,0}}         ,"Rabbit", Board.blue);
-  Card crab     = new Card(new int[][]{{2,0},  {-2,0},  {0,1}}         ,"Crab", Board.blue);
-  Card elephant = new Card(new int[][]{{1,0},  {-1,0},  {1,1},  {-1,1}},"Elephant", Board.red);
-  Card goose    = new Card(new int[][]{{-1,1}, {1,-1},  {-1,0}, {1,0}} ,"Goose", Board.blue);
-  Card rooster  = new Card(new int[][]{{-1,-1},{1,1},   {-1,0}, {1,0}} ,"Rooster", Board.red);
-  Card monkey   = new Card(new int[][]{{1,1},  {-1,-1}, {1,-1}, {-1,1}},"Monkey", Board.blue);
-  Card mantis   = new Card(new int[][]{{0,-1}, {-1,1},  {1,1}}         ,"Mantis", Board.red);
-  Card horse    = new Card(new int[][]{{-1,0}, {0,1},   {0,-1}}        ,"Horse", Board.red);
-  Card ox       = new Card(new int[][]{{1,0},  {0,1},   {0,-1}}        ,"Ox", Board.blue);
-  Card crane    = new Card(new int[][]{{-1,-1},{1,-1},  {0,1}}         ,"Crane", Board.blue);
-  Card boar     = new Card(new int[][]{{-1,0}, {1,0},   {0,1}}         ,"Boar", Board.red);
-  Card eel      = new Card(new int[][]{{-1,1}, {-1,-1}, {1,0}}         ,"Eel", Board.blue);
-  Card cobra    = new Card(new int[][]{{1,1},  {1,-1},  {-1,0}}        ,"Cobra", Board.red);
+  tiger    = new Card(new int[][]{{0,2},  {0,-1}}                 ,"Tiger", Board.blue);
+  dragon   = new Card(new int[][]{{-2,1}, {-1,-1}, {1,-1}, {2,1}} ,"Dragon", Board.red);
+  frog     = new Card(new int[][]{{-2,0}, {-1,1},  {1,-1}}        ,"Frog", Board.red);
+  rabbit   = new Card(new int[][]{{1,1},  {-1,-1}, {2,0}}         ,"Rabbit", Board.blue);
+  crab     = new Card(new int[][]{{2,0},  {-2,0},  {0,1}}         ,"Crab", Board.blue);
+  elephant = new Card(new int[][]{{1,0},  {-1,0},  {1,1},  {-1,1}},"Elephant", Board.red);
+  goose    = new Card(new int[][]{{-1,1}, {1,-1},  {-1,0}, {1,0}} ,"Goose", Board.blue);
+  rooster  = new Card(new int[][]{{-1,-1},{1,1},   {-1,0}, {1,0}} ,"Rooster", Board.red);
+  monkey   = new Card(new int[][]{{1,1},  {-1,-1}, {1,-1}, {-1,1}},"Monkey", Board.blue);
+  mantis   = new Card(new int[][]{{0,-1}, {-1,1},  {1,1}}         ,"Mantis", Board.red);
+  horse    = new Card(new int[][]{{-1,0}, {0,1},   {0,-1}}        ,"Horse", Board.red);
+  ox       = new Card(new int[][]{{1,0},  {0,1},   {0,-1}}        ,"Ox", Board.blue);
+  crane    = new Card(new int[][]{{-1,-1},{1,-1},  {0,1}}         ,"Crane", Board.blue);
+  boar     = new Card(new int[][]{{-1,0}, {1,0},   {0,1}}         ,"Boar", Board.red);
+  eel      = new Card(new int[][]{{-1,1}, {-1,-1}, {1,0}}         ,"Eel", Board.blue);
+  cobra    = new Card(new int[][]{{1,1},  {1,-1},  {-1,0}}        ,"Cobra", Board.red);
  }
 
  Card(int [][] moves, String name, int color)
