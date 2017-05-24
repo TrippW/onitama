@@ -7,7 +7,7 @@ public class Piece
  public Piece(Coordinate c, int col, boolean isKing)
  {
   this.isKing = isKing;
-  coord = c;
+  coord = new Coordinate(c);
   color = col;
  }
 
