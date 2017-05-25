@@ -3,8 +3,8 @@ import java.util.ArrayList;
 public class Card
 {
 //Name(Set of moves, name)
- public String name;
- public int[][] moves;
+ private String name;
+ private int[][] moves;
  private int color;
 
  public static ArrayList<Card> allCards = new ArrayList<Card>();
@@ -26,6 +26,10 @@ public class Card
  public static Card eel;
  public static Card cobra;
 
+ public String toString()
+ {
+  return name;
+ }
 
  public static void init()
  {
@@ -54,6 +58,13 @@ public class Card
   this.color = color;
 
   allCards.add(this);
+ }
+
+ public Card(Card c)
+ {
+  moves = c.getMoves();
+  name  = c.getName();
+  color = c.getColor();
  }
 
  public int [][] getMoves()
@@ -86,5 +97,9 @@ public class Card
   return null;
  }
 
+ public boolean equals(Card c)
+ {
+  return c.getName().equals(name);
+ }
 }
 
