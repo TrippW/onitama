@@ -401,7 +401,7 @@ public class GUI implements MouseListener
    return;
   }
 
-  for(int [] pair : Card.getCardByName(((CardGUI)lastCardHighlighted).getText()).moves)
+  for(int [] pair : Card.getCardByName(((CardGUI)lastCardHighlighted).getText()).getMoves())
   {
    int newX = pair[0]*gameBoard.getCurrentPlayer().getColor()*-1+from.getX();
    int newY = pair[1]*gameBoard.getCurrentPlayer().getColor()+from.getY();
@@ -456,7 +456,7 @@ public class GUI implements MouseListener
    return;
   }
 
-  for(int [] pair : Card.getCardByName(((CardGUI)lastCardHighlighted).getText()).moves)
+  for(int [] pair : Card.getCardByName(((CardGUI)lastCardHighlighted).getText()).getMoves())
   {
    int newX = pair[0]*gameBoard.getCurrentPlayer().getColor()*-1+from.getX();
    int newY = pair[1]*gameBoard.getCurrentPlayer().getColor()+from.getY();

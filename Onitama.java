@@ -30,7 +30,7 @@ public class Onitama
   p2.setBoard(board);
 
   for(int i = 0;i < cards.length;i++)
-   System.out.println(cards[i].name);
+   System.out.println(cards[i].getName());
 
  }
 

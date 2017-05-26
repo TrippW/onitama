@@ -42,7 +42,7 @@ public class Player
 
  public int[] getMove(int selectedCard, int option)
  {
-  return cards[selectedCard].moves[option];
+  return cards[selectedCard].getMoves()[option];
  }
 
  public int getColor()
