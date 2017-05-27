@@ -5,145 +5,12 @@ import java.awt.event.MouseEvent;
 
 public class GUI implements MouseListener
 {
- private class CardGUI extends JPanel
- {
-  JLabel [][] moves = new JLabel[5][5];
-
-  JLabel name;
-
-  JPanel movePanel;
-
-  int color;
-
-  GridBagLayout gridbag = new GridBagLayout();
-  GridBagConstraints gbc = new GridBagConstraints();
-
-  public CardGUI(CardGUI cg)
-  {
-   this(cg, cg.getColor());
-  }
-
-  public CardGUI(CardGUI cg, int color)
-  {
-   init();
-   this.color = color;
-   set(cg);
-  }
-
-  public CardGUI(Card c, int color)
-  {
-   init();
-
-   this.color = color;
-
-   name.setText(c.getName());
-
-   for(int[] m : c.getMoves())
-   {
-    int x = 2+m[0]*color*-1, y = 2+m[1]*color;
-    moves[y][x].setBackground(Color.YELLOW);
-   }
-   gbc = new GridBagConstraints();
-   gbc.gridwidth = 2;
-   gbc.gridheight = 1;
-   gridbag.setConstraints(movePanel,gbc);
-   add(movePanel);
-  }
-
-  private void init()
-  {
-   setBackground(Color.WHITE);
-
-   gridbag = new GridBagLayout();
-   gbc = new GridBagConstraints();
-
-   name = new JLabel("");
-
-   setLayout(gridbag);
-
-   movePanel = new JPanel();
-   movePanel.setLayout(new GridLayout(5,5));
-
-   gbc = new GridBagConstraints();
-   gbc.gridwidth = 1;
-   gbc.gridheight = 1;
-   gridbag.setConstraints(name,gbc);
-   add(name);
-
-   for(int y = 0; y < 5; y++)
-    for(int x = 0; x < 5; x++)
-    {
-     int width = 15, height = 15;
-
-     moves[y][x] = new JLabel(" ");
-     moves[y][x].setBackground(Color.WHITE);
-     moves[y][x].setOpaque(true);
-     moves[y][x].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-     moves[y][x].setMinimumSize(new Dimension(width, height));
-     moves[y][x].setPreferredSize(new Dimension(width, height));
-     moves[y][x].setMaximumSize(new Dimension(width, height));
-     movePanel.add(moves[y][x]);
-    }
-   moves[2][2].setBackground(Color.BLACK);
-  }
-
-  public void setText(String n)
-  {
-   name.setText(n);
-  }
-
-  public void setMoves(JLabel [][] mp)
-  {
-   for(int y = 0; y < 5; y++)
-    for(int x = 0; x < 5; x++)
-     moves[y][x].setBackground(mp[y][x].getBackground());
-  }
-
-  public void swap(JLabel [][] mp)
-  {
-   for(int y = 0; y < 5; y++)
-    for(int x = 0; x < 5; x++)
-     moves[y][x].setBackground(mp[4-y][4-x].getBackground());
-  }
-
-  public JLabel[][] getMoves()
-  {
-   return moves;
-  }
-
-  public String getText()
-  {
-   return name.getText();
-  }
-
-  public void set(CardGUI cg, int color)
-  {
-   set(cg);
-   this.color = color;
-  }
-
-  public void set(CardGUI cg)
-  {
-   setText(cg.getText());
-   if(color != cg.getColor())
-    swap(cg.getMoves());
-   else
-    setMoves(cg.getMoves());
-   color = cg.getColor();
-  }
-
-  public int getColor()
-  {
-   return color;
-  }
- }
-
  JFrame frame;
  JPanel main, cards, board;
 
  JLabel curPlayer;
-
- JPanel blue1, blue2, red1, red2, tableCard;
+//Was JPanel
+ CardGUI blue1, blue2, red1, red2, tableCard;
 
  JLabel [][] lblBoard = new JLabel[5][5];
 
@@ -203,12 +70,15 @@ public class GUI implements MouseListener
 
   cards.setOpaque(true);
   cards.setBackground(Color.WHITE);
+
 //create card labels
   red1 = new CardGUI(list[1], Board.red);
   red2 = new CardGUI(list[4], Board.red);
   blue1 = new CardGUI(list[0], Board.blue);
   blue2 = new CardGUI(list[3], Board.blue);
   tableCard = new CardGUI(list[2], Board.blue);
+
+  updateCards();
 
 //add card labels mouse listener
   red1.addMouseListener(this);
@@ -297,13 +167,17 @@ public class GUI implements MouseListener
  }
  public void mouseReleased(MouseEvent e)
  {
+
  }
  public void mousePressed(MouseEvent e)
  {
+
  }
 
  public void mouseClicked(MouseEvent e)
  {
+  if(gameBoard.checkWin()) return;
+
   if(e.getComponent().getParent() == cards)
   {
    selectCard(e);
@@ -363,17 +237,26 @@ public class GUI implements MouseListener
     if(lblBoard[y][x] == e.getComponent())
      to = new Coordinate(x,y);
    }
+   play(from, to);
+ }
+
+ private void play(Coordinate from, Coordinate to)
+ {
   move(from,to);
-  gameBoard.play(from, to);
+
+
   if(gameBoard.checkWin())
   {
-   curPlayer.setText("Winner: "+curPlayer.getText());
+   curPlayer.setText("Winner: "+gameBoard.getWinner().getColorString());
    return;
   }
 
-  switchPlayers();
-  switchCard();
+//  checkWin();
+
+//  switchPlayer();
+//  switchCard();
   selectedPawn = null;
+
  }
 
  private void unhighlightMoves()
@@ -468,14 +351,64 @@ public class GUI implements MouseListener
 
  private void move(Coordinate from, Coordinate to)
  {
-  unhighlightMoves();
-  unhighlightCard();
+  if(lastCardHighlighted != null)
+  {
+   if(selectedPawn != null)
+    unhighlightMoves();
+   unhighlightCard();
+  }
 
-  lblBoard[to.getY()][to.getX()].setText(lblBoard[from.getY()][from.getX()].getText());
-  lblBoard[to.getY()][to.getX()].setBackground(lblBoard[from.getY()][from.getX()].getBackground());
+  gameBoard.play(from, to);
+  update();
+ }
 
-  lblBoard[from.getY()][from.getX()].setText("");
-  lblBoard[from.getY()][from.getX()].setBackground(Color.WHITE);
+ private void updateBoard()
+ {
+  for(int y = 0; y < 5; y++)
+   for(int x = 0; x < 5; x++)
+    if(gameBoard.getPiece(x,y) == null)
+    {
+     lblBoard[y][x].setText("");
+     lblBoard[y][x].setBackground(Color.WHITE);
+    }
+    else
+    {
+     if(gameBoard.getPiece(x,y).isKing())
+      lblBoard[y][x].setText("K");
+     else
+      lblBoard[y][x].setText("P");
+
+     if(gameBoard.getPiece(x,y).getColor() == Board.red)
+      lblBoard[y][x].setBackground(Color.RED);
+     else
+      lblBoard[y][x].setBackground(Color.BLUE);
+    }
+ }
+
+ public void update()
+ {
+//updatePlayer
+  switchPlayer();//curPlayer.setText(gameBoard.getCurrentPlayer().getColorString());
+//update Cards
+  if(lastCardHighlighted != null)
+   switchCard();
+  else
+   updateCards();
+//update Board
+  updateBoard();
+ }
+
+ private void updateCards()
+ {
+  Card [] c = gameBoard.getPlayerOfColor(Board.red).getCards();
+  red1.set(new CardGUI(c[0], Board.red));
+  red2.set(new CardGUI(c[1], Board.red));
+
+  c = gameBoard.getPlayerOfColor(Board.blue).getCards();
+  blue1.set(new CardGUI(c[0], Board.blue));
+  blue2.set(new CardGUI(c[1], Board.blue));
+
+  tableCard.set(new CardGUI(gameBoard.getBoardCard(),Board.blue));
 
  }
 
@@ -483,32 +416,19 @@ public class GUI implements MouseListener
  {
   if(lastCardHighlighted == null)
   {
-System.out.println("ERROR SWITCHING CARDS!");
-System.exit(2);
+   System.out.println("ERROR SWITCHING CARDS!");
+   System.exit(2);
   }
+
   CardGUI temp = new CardGUI((CardGUI) lastCardHighlighted);
-  CardGUI tc   = (CardGUI) tableCard;
-  if(lastCardHighlighted == red1)
-   ((CardGUI) red1).set(tc,Board.red);
-
-  if(lastCardHighlighted == red2)
-   ((CardGUI) red2).set(tc,Board.red);
-
-  if(lastCardHighlighted == blue1)
-   ((CardGUI) blue1).set(tc,Board.blue);
-
-  if(lastCardHighlighted == blue2)
-   ((CardGUI) blue2).set(tc,Board.blue);
-
-  ((CardGUI)tableCard).set(temp,Board.blue);
+  gameBoard.swapCard(Card.getCardByName(temp.getName()));
   lastCardHighlighted = null;
+  updateCards();
  }
 
- private void switchPlayers()
+ private void switchPlayer()
  {
-  if(curPlayer.getText().equals("Red"))
-   curPlayer.setText("Blue");
-  else
-   curPlayer.setText("Red");
+  gameBoard.switchPlayer();
+  curPlayer.setText(gameBoard.getCurrentPlayer().getColorString());
  }
 }

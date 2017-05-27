@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Player
 {
  private Card[] cards;
@@ -12,6 +14,14 @@ public class Player
   this.isComputer = isComputer;
  }
 
+ public Player(Player p)
+ {
+  cards = Arrays.copyOf(p.getCards(),2);
+  board = p.getBoard();
+  color = p.getColor();
+  isComputer = p.isComputer();
+ }
+
  public boolean isComputer()
  {
   return isComputer;
@@ -19,20 +29,27 @@ public class Player
 
  public void setBoard(Board b)
  {
-  board = b;
+  if(board == null)
+   board = b;
+  else
+   board = new Board(b);
+ }
+
+ public Board getBoard()
+ {
+  return board;
+ }
+
+ public void setCard(int index, Card card)
+ {
+  cards[index] = new Card(card);
  }
 
  public Coordinate [] getMove()
  {
   if(isComputer)
    return getMax();
-  else
-   return getMin();
- }
-
- public Coordinate [] getMin()
- {
-  return new Coordinate[]{new Coordinate(0,0), new Coordinate(0,0)};
+  return null;
  }
 
  public Coordinate [] getMax()
@@ -40,9 +57,9 @@ public class Player
   return new Coordinate[]{new Coordinate(0,0), new Coordinate(0,0)};
  }
 
- public int[] getMove(int selectedCard, int option)
+ public Card[] getCards()
  {
-  return cards[selectedCard].getMoves()[option];
+  return cards;
  }
 
  public int getColor()
