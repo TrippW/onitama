@@ -93,6 +93,11 @@ public class Coordinate
   return (c.getX()-x)*(c.getX()-x)+(c.getY()-y)*(c.getY()-y);
  }
 
+ public boolean equals(Coordinate c)
+ {
+  return compare(c) == 0;
+ }
+
  public String toString()
  {
   return "("+x+","+y+")";
