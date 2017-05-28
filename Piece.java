@@ -25,7 +25,7 @@ public class Piece
 
  public void setCoord(Coordinate c)
  {
-  coord = c;
+  coord = new Coordinate(c);
  }
 
  public int getColor()
