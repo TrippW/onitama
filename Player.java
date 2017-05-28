@@ -67,6 +67,11 @@ public class Player
   return color;
  }
 
+ public String toString()
+ {
+  return getColorString()+"\nCards: "+cards[0]+", "+cards[1]+"\nIs Computer: "+isComputer;
+ }
+
  public String getColorString()
  {
   String col = "Blue";
