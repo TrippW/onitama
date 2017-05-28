@@ -2,8 +2,10 @@ import java.awt.*;
 
 public class Board
 {
- public static int red  = 1;
- public static int blue = -1;
+ public static final int red  = 1;
+ public static final int blue = -1;
+
+ public static final int EASY = 3, MEDIUM = 5, HARD = 9;
 
  private Piece board [][] = new Piece[5][5];
 
@@ -18,15 +20,23 @@ public class Board
  private Player curPlayer;
  private Player offPlayer;
 
+ private Player aiCurPlayer;
+ private Player aiOffPlayer;
+
+ private Coordinate [] aiCoord;
+ private Card aiCard;
+
+ private int difficulty = MEDIUM;
+
  public Board(Board b)
  {
-  this.boardCard = b.getBoardCard();
+  boardCard = b.getBoardCard();
   for(int i = 0; i < 25; i++)
-   if(b.getPiece(i/5,i%5) != null)
-    board[i/5][i%5] = new Piece(b.getPiece(i/5,i%5));
+   if(b.getPiece(i%5,i/5) != null)
+    board[i/5][i%5] = new Piece(b.getPiece(i%5,i/5));
 
-  curPlayer = getCurrentPlayer();
-  offPlayer = getOffPlayer();
+  curPlayer = new Player(b.getCurrentPlayer());
+  offPlayer = new Player(b.getOffPlayer());
  }
 
  public Board(Card inbetween, Player starter, Player off)
@@ -74,31 +84,196 @@ public class Board
  {
   if(curPlayer.isComputer())
   {
-   Coordinate [] moves = curPlayer.getMove();
-   play(moves);
+   alphabeta();
+System.out.println(this);
+System.out.println("("+aiCoord[0]+"; "+aiCoord[1]+")");
+   play(aiCoord);
+   System.out.println(aiCoord[1]+", "+getPiece(aiCoord[1]).getCoord());
+   swapCard(aiCard);
+System.out.println(this);
+  }
+ }
+
+ private void alphabeta()
+ {
+  aiCoord = null;
+  aiCard  = null;
+  aiCurPlayer = new Player(curPlayer);
+  aiOffPlayer = new Player(offPlayer);
+
+  Board temp = new Board(boardCard, aiCurPlayer, aiOffPlayer);
+
+  aiCurPlayer.setBoard(temp);
+  aiOffPlayer.setBoard(temp);
+  System.out.println(alphabeta(this, difficulty, Integer.MIN_VALUE, Integer.MAX_VALUE, true));
+ }
+
+ public Piece getKingOfColor(int color)
+ {
+  for(Piece p: getPiecesOfColor(color))
+   if(p != null && p.isKing())
+    return p;
+  return null;
+ }
+
+ public int getPieceCountByColor(int color)
+ {
+  int count = 0;
+  for(Piece p: getPiecesOfColor(color))
+   if(p != null)
+    ++count;
+  return count;
+ }
+
+ private int alphabeta(Board node, int depth, int alpha, int beta, boolean maximize)
+ {
+
+  if(node.checkWin())
+  {
+   if(node.getWinner().getColor() == aiCurPlayer.getColor())
+   {
+    return Integer.MAX_VALUE;
+   }
+   else
+   {
+    return Integer.MIN_VALUE;
+   }
+  }
+
+  if(depth <= 0)
+  {
+   int curCount = node.getPieceCountByColor(aiCurPlayer.getColor());
+   int offCount = node.getPieceCountByColor(aiOffPlayer.getColor());
+
+   int curCloseness = node.getKingOfColor(aiCurPlayer.getColor()).getCoord().compare(
+                      ((aiCurPlayer.getColor() == red) ? Coordinate.blueEnd : Coordinate.redEnd));
+
+   int offCloseness = node.getKingOfColor(aiOffPlayer.getColor()).getCoord().compare(
+                      ((aiOffPlayer.getColor() == red) ? Coordinate.blueEnd : Coordinate.redEnd));
+
+   return (curCount-curCloseness)-(offCount*3-offCloseness);
+  }
+
+  if(maximize)
+  {
+   int v =  Integer.MIN_VALUE;
+   for(Card c : node.getCardsOfPlayerColor(aiCurPlayer.getColor()))
+   {
+    for(Piece p: node.getPiecesOfColor(aiCurPlayer.getColor()))
+    {
+     if(p == null) continue;
+
+     for(int [] move : c.getMoves())
+     {
+      Board child = new Board(node);
+
+      Coordinate from = new Coordinate(p.getCoord());
+      Coordinate to   = new Coordinate(from);
+
+      if(!to.move(move, aiCurPlayer.getColor())) continue;
+
+      if(child.getPiece(from) == null) continue;
+
+      child.play(from, to);
+      child.swapCard(c);
+      child.switchPlayer();
+
+      int retVal = alphabeta(child, depth-1, alpha, beta, false);
+
+      if(v < retVal)
+      {
+       aiCoord = new Coordinate[]{from, to};
+       aiCard  = c;
+       v = retVal;
+
+       if(alpha < v)
+       {
+        alpha = v;
+        if(beta <= alpha)
+         return v;
+       }
+      }
+     }
+    }
+   }
+   return v;
+  }
+  else
+  {
+   int v =  Integer.MAX_VALUE;
+   for(Card c : node.getCardsOfPlayerColor(aiOffPlayer.getColor()))
+   {
+    if(c==null) continue;
+    for(Piece p: node.getPiecesOfColor(aiOffPlayer.getColor()))
+    {
+     if(p == null) continue;
+
+     for(int [] move : c.getMoves())
+     {
+      if(move == null) continue;
+
+      Board child = new Board(node);
+
+      Coordinate from = new Coordinate(p.getCoord());
+      Coordinate to   = new Coordinate(from);
+
+
+      if(!to.move(move, aiOffPlayer.getColor()) || from.equals(to)) continue;
+//      System.out.println("From: "+from);
+//      System.out.println("To: "+to);
+
+      if(child.getPiece(from) == null) continue;
+      child.play(from, to);
+      child.swapCard(c);
+      child.switchPlayer();
+
+      int retVal = alphabeta(child, depth-1, alpha, beta, true);
+
+      if(v > retVal)
+      {
+//       aiCoord = new Coordinate[]{from, to};
+//       aiCard  = c;
+       v = retVal;
+
+       if(beta > v)
+       {
+        beta = v;
+        if(beta <= alpha)
+         return v;
+       }
+      }
+     }
+    }
+   }
+   return v;
   }
  }
 
  public Piece[][] getBoard(){ return board;}
+
+ public Card[] getCardsOfPlayerColor(int color)
+ {
+  return getPlayerOfColor(color).getCards();
+ }
 
  public Piece getPiece(int x, int y)
  {
   return board[y][x];
  }
 
- public Piece [] getPieceOfPlayer(Player p)
+ public Piece [] getPiecesOfPlayer(Player p)
  {
-  return getPieceOfColor(p.getColor());
+  return getPiecesOfColor(p.getColor());
  }
 
- public Piece [] getPieceOfColor(int color)
+ public Piece [] getPiecesOfColor(int color)
  {
   int index = 0;
   Piece [] pieces = new Piece[5];
 
   for(int i = 0; i < 25; i++)
-   if(getPiece(i/5,i%5).getColor() == color)
-    pieces[index++] = new Piece(getPiece(i/5,i%5));
+   if(getPiece(i%5,i/5) != null && getPiece(i%5,i/5).getColor() == color)
+    pieces[index++] = new Piece(getPiece(i%5,i/5));
 
   return pieces;
  }
@@ -126,10 +301,18 @@ public class Board
 
  public boolean checkWin()
  {
-  if(board[0][2] != null && board[0][2].isKing() && board[0][2].getColor() == blue)
+
+  Piece p = getPiece(Coordinate.redEnd);
+
+  if(p != null && p.isKing() && p.getColor() == blue)
    return (blueWin = true);
-  if(board[4][2] != null && board[4][2].isKing() && board[4][2].getColor() == red)
+
+  p = getPiece(Coordinate.blueEnd);
+  if(p != null && p.isKing() && p.getColor() == red)
    return (redWin = true);
+
+  containsBlueKing = (getKingOfColor(blue)  != null);
+  containsRedKing  = (getKingOfColor(red)   != null);
 
   return !(containsBlueKing && containsRedKing);
  }
@@ -147,9 +330,10 @@ public class Board
    else
     containsRedKing = false;
 
-//TODO
-//getPiece -> new Obj
-  board[to.getY()][to.getX()] = getPiece(from);
+  if(getPiece(from) == null) System.out.println("NULL AT "+from);
+
+  board[to.getY()][to.getX()] = new Piece(getPiece(from));
+  getPiece(to.getX(),to.getY()).setCoord(to);
   board[from.getY()][from.getX()] = null;
  }
 
@@ -180,6 +364,7 @@ public class Board
     boardCard = new Card(handCard);
     break;
    }
+
    if(offPlayer.getCards()[i].equals(handCard))
    {
     offPlayer.setCard(i, boardCard);
@@ -194,7 +379,7 @@ public class Board
   return new Board(this);
  }
 
- public String toStirng()
+ public String toString()
  {
   return "Current Player:\n"+curPlayer+"\nOff Player:\n"+offPlayer+"\nBoardCard:"+boardCard+"\nBoard:\n"+getBoardString();
  }
@@ -203,7 +388,7 @@ public class Board
  {
   String ret = "";
   for(int i = 0; i < 25; i++)
-   ret+= "| "+((getPiece(i%5,i/5) == null)? "  " : (getPiece(i%5,i/5).getColor() == red) ? "r " : "b ")+((i != 0 && i % 5 == 0)?"|\n":"");
+   ret+= "|"+(i%5)+((getPiece(i%5,i/5) == null)? " " : ((getPiece(i%5,i/5).getColor() == red) ? "r" : "b"))+(i/5)+((i % 5 == 4)?"|\n":"");
   return ret;
  }
 }

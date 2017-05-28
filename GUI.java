@@ -240,23 +240,43 @@ public class GUI implements MouseListener
    play(from, to);
  }
 
+ private void play(Coordinate [] cords)
+ {
+  play(cords[0],cords[1]);
+ }
+
  private void play(Coordinate from, Coordinate to)
  {
   move(from,to);
 
+  checkWin();
+//  update();
+/*
+  switchPlayer();
+  updateCards();
+*/
+  selectedPawn = null;
 
+  if(gameBoard.isComputerTurn())
+   compTurn();
+
+ }
+
+ public void compTurn()
+ {
+  gameBoard.computerTurn();
+  checkWin();
+  update();
+ }
+
+ private void checkWin()
+ {
   if(gameBoard.checkWin())
   {
    curPlayer.setText("Winner: "+gameBoard.getWinner().getColorString());
-   return;
+   System.out.println(curPlayer.getText());
+   System.exit(0);
   }
-
-//  checkWin();
-
-//  switchPlayer();
-//  switchCard();
-  selectedPawn = null;
-
  }
 
  private void unhighlightMoves()
@@ -388,7 +408,7 @@ public class GUI implements MouseListener
  public void update()
  {
 //updatePlayer
-  switchPlayer();//curPlayer.setText(gameBoard.getCurrentPlayer().getColorString());
+  switchPlayer();
 //update Cards
   if(lastCardHighlighted != null)
    switchCard();

@@ -12,7 +12,7 @@ public class Onitama
  {
 
   Card cards[] = Deck.draw();
-  Player p1 = new Player(new Card[]{cards[0],cards[3]}, false, Board.red);
+  Player p1 = new Player(new Card[]{cards[0],cards[3]}, true, Board.red);
   Player p2 = new Player(new Card[]{cards[1],cards[4]}, false, Board.blue);
 
   Board board = null;
@@ -28,6 +28,9 @@ public class Onitama
 
   p1.setBoard(board);
   p2.setBoard(board);
+
+  if(board.isComputerTurn())
+   g.compTurn();
 
   for(int i = 0;i < cards.length;i++)
    System.out.println(((i==0 || i==3)?"R:":((i==2)?"T:":"B:"))+cards[i].getName());
