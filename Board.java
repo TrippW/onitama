@@ -30,7 +30,8 @@ public class Board
 
  public Board(Board b)
  {
-  boardCard = b.getBoardCard();
+  boardCard = new Card(b.getBoardCard());
+
   for(int i = 0; i < 25; i++)
    if(b.getPiece(i%5,i/5) != null)
     board[i/5][i%5] = new Piece(b.getPiece(i%5,i/5));
@@ -85,12 +86,9 @@ public class Board
   if(curPlayer.isComputer())
   {
    alphabeta();
-System.out.println(this);
-System.out.println("("+aiCoord[0]+"; "+aiCoord[1]+")");
    play(aiCoord);
-   System.out.println(aiCoord[1]+", "+getPiece(aiCoord[1]).getCoord());
+   System.out.println("("+aiCoord[0]+"; "+aiCoord[1]+")"+"\t move uses card "+aiCard);
    swapCard(aiCard);
-System.out.println(this);
   }
  }
 
@@ -132,11 +130,11 @@ System.out.println(this);
   {
    if(node.getWinner().getColor() == aiCurPlayer.getColor())
    {
-    return Integer.MAX_VALUE;
+    return 100+depth;
    }
    else
    {
-    return Integer.MIN_VALUE;
+    return -(100+depth);
    }
   }
 
@@ -151,7 +149,7 @@ System.out.println(this);
    int offCloseness = node.getKingOfColor(aiOffPlayer.getColor()).getCoord().compare(
                       ((aiOffPlayer.getColor() == red) ? Coordinate.blueEnd : Coordinate.redEnd));
 
-   return (curCount-curCloseness)-(offCount*3-offCloseness);
+   return (curCount-curCloseness)-(offCount-offCloseness);
   }
 
   if(maximize)
@@ -173,6 +171,7 @@ System.out.println(this);
       if(!to.move(move, aiCurPlayer.getColor())) continue;
 
       if(child.getPiece(from) == null) continue;
+      if(child.getPiece(to) != null && child.getPiece(from).getColor() == child.getPiece(to).getColor()) continue;
 
       child.play(from, to);
       child.swapCard(c);
@@ -182,12 +181,14 @@ System.out.println(this);
 
       if(v < retVal)
       {
-       aiCoord = new Coordinate[]{from, to};
-       aiCard  = c;
        v = retVal;
-
        if(alpha < v)
        {
+        if(depth == difficulty)
+        {
+         aiCoord = new Coordinate[]{from, to};
+         aiCard  = c;
+        }
         alpha = v;
         if(beta <= alpha)
          return v;
@@ -219,10 +220,9 @@ System.out.println(this);
 
 
       if(!to.move(move, aiOffPlayer.getColor()) || from.equals(to)) continue;
-//      System.out.println("From: "+from);
-//      System.out.println("To: "+to);
-
       if(child.getPiece(from) == null) continue;
+      if(child.getPiece(to) != null && child.getPiece(from).getColor() == child.getPiece(to).getColor()) continue;
+
       child.play(from, to);
       child.swapCard(c);
       child.switchPlayer();
@@ -231,10 +231,9 @@ System.out.println(this);
 
       if(v > retVal)
       {
+       v = retVal;
 //       aiCoord = new Coordinate[]{from, to};
 //       aiCard  = c;
-       v = retVal;
-
        if(beta > v)
        {
         beta = v;
