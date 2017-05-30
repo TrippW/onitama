@@ -2,22 +2,27 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
 
 public class GUI implements MouseListener
 {
- JFrame frame;
- JPanel main, cards, board;
+ private JFrame frame;
+ private JPanel main, cards, board;
+ private JMenuBar menuBar;
+ private JMenu menu;
+ private JMenuItem menuPlayers, menuDifficulty, menuReset;
 
- JLabel curPlayer;
-//Was JPanel
- CardGUI blue1, blue2, red1, red2, tableCard;
+ private JLabel curPlayer;
 
- JLabel [][] lblBoard = new JLabel[5][5];
+ private CardGUI blue1, blue2, red1, red2, tableCard;
 
- Component lastCardHighlighted = null;
- Component selectedPawn = null;
+ private JLabel [][] lblBoard = new JLabel[5][5];
 
- Board gameBoard;
+ private Component lastCardHighlighted = null;
+ private Component selectedPawn = null;
+
+ private Board gameBoard;
 
  public GUI(Card [] list, Board b)
  {
@@ -27,8 +32,41 @@ public class GUI implements MouseListener
    System.out.println("Game board not initialized");
    System.exit(1);
   }
+  frame = new JFrame("Onitama");
   curPlayer = new JLabel(b.getCurrentPlayer().getColorString());
   initFrame(list);
+  initBar();
+  finishFrame();
+  initGUIBoard();
+ }
+
+ public void initBar()
+ {
+  menuBar = new JMenuBar();
+  menu = new JMenu("Settings");
+  menu.setMnemonic(KeyEvent.VK_S);
+  menu.getAccessibleContext().setAccessibleDescription("The Settings for number of players and computer difficulty");
+  menuBar.add(menu);
+
+  menuReset = new JMenuItem("Reset");
+  menuReset.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.ALT_MASK));
+  menuReset.addActionListener(new MenuListener());
+  menuReset.setActionCommand("Reset");
+  menu.add(menuReset);
+
+  menuPlayers = new JMenuItem("Set Number of Players");
+  menuPlayers.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+  menuPlayers.addActionListener(new MenuListener());
+  menuPlayers.setActionCommand("PlayerNum");
+  menu.add(menuPlayers);
+
+  menuDifficulty = new JMenuItem("Set Computer Difficulty");
+  menuDifficulty.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.ALT_MASK));
+  menuDifficulty.addActionListener(new MenuListener());
+  menuDifficulty.setActionCommand("Difficulty");
+  menu.add(menuDifficulty);
+
+  frame.setJMenuBar(menuBar);
  }
 
  public void initGUIBoard()
@@ -57,8 +95,6 @@ public class GUI implements MouseListener
 
  private void initFrame(Card [] list)
  {
-  frame = new JFrame("Onitama");
-
   GridBagLayout gridbag = new GridBagLayout();
 
   main = new JPanel();
@@ -148,14 +184,43 @@ public class GUI implements MouseListener
   main.add(board);
 
   frame.add(main);
+ }
 
-
+ private void finishFrame()
+ {
   frame.pack();
 
   frame.setLocationRelativeTo(null);
   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   frame.setVisible(true);
  }
+
+ public void reset(Card [] list, Board b)
+ {
+
+  frame.getContentPane().removeAll();
+
+  lblBoard = new JLabel[5][5];
+
+  lastCardHighlighted = null;
+  selectedPawn = null;
+
+
+  gameBoard = new Board(b);
+
+  if(b == null)
+  {
+   System.out.println("Game board not initialized");
+   System.exit(1);
+  }
+  curPlayer = new JLabel(b.getCurrentPlayer().getColorString());
+  initFrame(list);
+  initBar();
+  frame.pack();
+  frame.validate();
+  initGUIBoard();
+ }
+
 
  public void mouseExited(MouseEvent e)
  {
@@ -263,11 +328,15 @@ public class GUI implements MouseListener
   update();
   checkWin();
   if(gameBoard.isComputerTurn())
+  {
+   System.sleep(500);
    compTurn();
+  }
  }
 
  private void checkWin()
  {
+  updateBoard();
   if(gameBoard.checkWin())
   {
    curPlayer.setText("Winner: "+gameBoard.getWinner().getColorString());
@@ -317,11 +386,13 @@ public class GUI implements MouseListener
  {
 //updatePlayer
   switchPlayer();
+
 //update Cards
   if(lastCardHighlighted != null)
    switchCard();
   else
    updateCards();
+
 //update Board
   updateBoard();
  }
