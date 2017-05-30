@@ -252,7 +252,7 @@ public class GUI implements MouseListener
   {
    if(selectedPawn != null && e.getComponent().getBackground()==Color.YELLOW)
    {
-    move(e);
+    play(e);
    }
    else
    {
@@ -289,7 +289,7 @@ public class GUI implements MouseListener
    lastCardHighlighted.setBackground(Color.WHITE);
  }
 
- private void move(MouseEvent e)
+ private void play(MouseEvent e)
  {
   Coordinate from = null;
   Coordinate to = null;
@@ -305,11 +305,12 @@ public class GUI implements MouseListener
    play(from, to);
  }
 
- private void play(Coordinate [] cords)
+
+/* private void play(Coordinate [] cords)
  {
   play(cords[0],cords[1]);
  }
-
+*/
  private void play(Coordinate from, Coordinate to)
  {
   move(from,to);
@@ -317,7 +318,7 @@ public class GUI implements MouseListener
 
   selectedPawn = null;
 
-  if(gameBoard.isComputerTurn())
+  if(gameBoard.isComputerTurn() && !gameBoard.checkWin())
    compTurn();
 
  }
@@ -327,9 +328,16 @@ public class GUI implements MouseListener
   gameBoard.computerTurn();
   update();
   checkWin();
-  if(gameBoard.isComputerTurn())
+  if(gameBoard.isComputerTurn() && !gameBoard.checkWin())
   {
-   System.sleep(500);
+   try
+   {
+    Thread.sleep(500);
+   }
+   catch(InterruptedException ex)
+   {
+    Thread.currentThread().interrupt();
+   }
    compTurn();
   }
  }
@@ -341,8 +349,6 @@ public class GUI implements MouseListener
   {
    curPlayer.setText("Winner: "+gameBoard.getWinner().getColorString());
    System.out.println(curPlayer.getText());
-   while(gameBoard.checkWin());
-   System.exit(0);
   }
  }
 
@@ -357,6 +363,7 @@ public class GUI implements MouseListener
 
   gameBoard.play(from, to);
   update();
+  updateBoard();
  }
 
  private void updateBoard()
@@ -401,48 +408,7 @@ public class GUI implements MouseListener
 //Private methods for user selection/movement
  private void unhighlightMoves()
  {
-  Coordinate from = null;
-
-  if(lastCardHighlighted == null)
-  {
-   System.out.println("Unhighlighted error: no card selected");
-   return;
-  }
-
-  for(int x = 0; x < 5; x++)
-   for(int y = 0; y < 5; y++)
-    if(lblBoard[y][x] == selectedPawn)
-    {
-     from = new Coordinate(x,y);
-     x=7;
-     break;
-    }
-
-  if(from == null)
-  {
-   System.out.println("Unhighlighted error: no pawn selected");
-   return;
-  }
-
-  for(int [] pair : Card.getCardByName(((CardGUI)lastCardHighlighted).getText()).getMoves())
-  {
-   int newX = pair[0]*gameBoard.getCurrentPlayer().getColor()*-1+from.getX();
-   int newY = pair[1]*gameBoard.getCurrentPlayer().getColor()+from.getY();
-
-   if(newX >= 0 && newX < 5 && newY >= 0 && newY < 5)
-    if(lblBoard[newY][newX].getBackground() != lblBoard[from.getY()][from.getX()].getBackground())
-    {
-     if(lblBoard[newY][newX].getText().equals(""))
-      lblBoard[newY][newX].setBackground(Color.WHITE);
-     else
-     {
-      if(gameBoard.getCurrentPlayer().getColor() == Board.red)
-       lblBoard[newY][newX].setBackground(Color.BLUE);
-      else
-       lblBoard[newY][newX].setBackground(Color.RED);
-     }
-    }
-  }
+  updateBoard();
  }
 
 
@@ -503,7 +469,6 @@ public class GUI implements MouseListener
   blue2.set(new CardGUI(c[1], Board.blue));
 
   tableCard.set(new CardGUI(gameBoard.getBoardCard(),Board.blue));
-
  }
 
  private void switchCard()

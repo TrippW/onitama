@@ -82,7 +82,7 @@ public class Board
   if(isComputerTurn())
   {
    alphabeta();
-   play(aiCoord);
+   play(aiCoord[0], aiCoord[1]);
    System.out.println(curPlayer.getColorString()+" ("+aiCoord[0]+"; "+aiCoord[1]+")"+"\t move uses card "+aiCard);
    swapCard(aiCard);
   }
@@ -229,8 +229,6 @@ public class Board
       if(v > retVal)
       {
        v = retVal;
-//       aiCoord = new Coordinate[]{from, to};
-//       aiCard  = c;
        if(beta > v)
        {
         beta = v;
@@ -311,11 +309,6 @@ public class Board
   containsRedKing  = (getKingOfColor(red)   != null);
 
   return !(containsBlueKing && containsRedKing);
- }
-
- public void play(Coordinate [] play)
- {
-  play(play[0],play[1]);
  }
 
  public void play(Coordinate from, Coordinate to)
