@@ -5,8 +5,6 @@ public class Board
  public static final int red  = 1;
  public static final int blue = -1;
 
- public static final int EASY = 3, MEDIUM = 5, HARD = 9;
-
  private Piece board [][] = new Piece[5][5];
 
  private boolean containsBlueKing = true;
@@ -25,8 +23,6 @@ public class Board
 
  private Coordinate [] aiCoord;
  private Card aiCard;
-
- private int difficulty = MEDIUM;
 
  public Board(Board b)
  {
@@ -83,11 +79,11 @@ public class Board
 
  public void computerTurn()
  {
-  if(curPlayer.isComputer())
+  if(isComputerTurn())
   {
    alphabeta();
    play(aiCoord);
-   System.out.println("("+aiCoord[0]+"; "+aiCoord[1]+")"+"\t move uses card "+aiCard);
+   System.out.println(curPlayer.getColorString()+" ("+aiCoord[0]+"; "+aiCoord[1]+")"+"\t move uses card "+aiCard);
    swapCard(aiCard);
   }
  }
@@ -103,7 +99,9 @@ public class Board
 
   aiCurPlayer.setBoard(temp);
   aiOffPlayer.setBoard(temp);
-  System.out.println(alphabeta(this, difficulty, Integer.MIN_VALUE, Integer.MAX_VALUE, true));
+
+  System.out.println("Selected move score: "+alphabeta(this, aiCurPlayer.getDifficulty(), Integer.MIN_VALUE, Integer.MAX_VALUE, true));
+
  }
 
  public Piece getKingOfColor(int color)
@@ -125,7 +123,6 @@ public class Board
 
  private int alphabeta(Board node, int depth, int alpha, int beta, boolean maximize)
  {
-
   if(node.checkWin())
   {
    if(node.getWinner().getColor() == aiCurPlayer.getColor())
@@ -184,7 +181,7 @@ public class Board
        v = retVal;
        if(alpha < v)
        {
-        if(depth == difficulty)
+        if(depth == aiCurPlayer.getDifficulty())
         {
          aiCoord = new Coordinate[]{from, to};
          aiCard  = c;
@@ -328,8 +325,6 @@ public class Board
     containsBlueKing = false;
    else
     containsRedKing = false;
-
-  if(getPiece(from) == null) System.out.println("NULL AT "+from);
 
   board[to.getY()][to.getX()] = new Piece(getPiece(from));
   getPiece(to.getX(),to.getY()).setCoord(to);

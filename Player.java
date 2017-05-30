@@ -2,16 +2,28 @@ import java.util.Arrays;
 
 public class Player
 {
+ public static final int EASY = 3, MEDIUM = 4, HARD = 5;
+
  private Card[] cards;
  private Board board;
  private int color;
  private boolean isComputer;
+ private int difficulty;
 
- public Player(Card[] moves, boolean isComputer, int playerColor)
+ public Player(Card[] moves, int playerColor, int difficulty)
+ {
+  this(moves, playerColor);
+
+  isComputer = true;
+  this.difficulty = difficulty;
+ }
+
+ public Player(Card[] moves, int playerColor)
  {
   cards = moves;
   color = playerColor;
-  this.isComputer = isComputer;
+  difficulty = 0;
+  isComputer = false;
  }
 
  public Player(Player p)
@@ -20,6 +32,17 @@ public class Player
   board = p.getBoard();
   color = p.getColor();
   isComputer = p.isComputer();
+  difficulty = p.getDifficulty();
+ }
+
+ public int getDifficulty()
+ {
+  return difficulty;
+ }
+
+ public void setDifficulty(int n)
+ {
+  difficulty = n;
  }
 
  public boolean isComputer()
@@ -69,7 +92,7 @@ public class Player
 
  public String toString()
  {
-  return getColorString()+"\nCards: "+cards[0]+", "+cards[1]+"\nIs Computer: "+isComputer;
+  return getColorString()+"\nCards: "+cards[0]+", "+cards[1]+"\nIs Computer: "+isComputer+"\nDifficulty: "+difficulty;
  }
 
  public String getColorString()
