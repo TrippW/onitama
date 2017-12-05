@@ -23,6 +23,8 @@ public class GUI implements MouseListener
  private Component selectedPawn = null;
 
  private Board gameBoard;
+ private Color colorRed = new Color(0xf5544e);
+ private Color colorBlue = new Color(0x4e96f5);
 
  public GUI(Card [] list, Board b)
  {
@@ -86,9 +88,9 @@ public class GUI implements MouseListener
      lblBoard[y][x].setText("P");
 
     if(p.getColor() == Board.blue)
-     lblBoard[y][x].setBackground(Color.BLUE);
+     lblBoard[y][x].setBackground(colorBlue);
     else
-     lblBoard[y][x].setBackground(Color.RED);
+     lblBoard[y][x].setBackground(ColorRed);
 
    }
  }
@@ -256,7 +258,7 @@ public class GUI implements MouseListener
    }
    else
    {
-    if((e.getComponent().getBackground() == Color.RED && curPlayer.getText().equals("Red")) || (e.getComponent().getBackground() == Color.BLUE && curPlayer.getText().equals("Blue")))
+    if((e.getComponent().getBackground() == colorRed && curPlayer.getText().equals("Red")) || (e.getComponent().getBackground() == colorBlue && curPlayer.getText().equals("Blue")))
      highlightMoves(e);
    }
   }
@@ -383,9 +385,9 @@ public class GUI implements MouseListener
       lblBoard[y][x].setText("P");
 
      if(gameBoard.getPiece(x,y).getColor() == Board.red)
-      lblBoard[y][x].setBackground(Color.RED);
+      lblBoard[y][x].setBackground(colorRed);
      else
-      lblBoard[y][x].setBackground(Color.BLUE);
+      lblBoard[y][x].setBackground(colorBlue);
     }
  }
 
