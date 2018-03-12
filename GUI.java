@@ -90,7 +90,7 @@ public class GUI implements MouseListener
     if(p.getColor() == Board.blue)
      lblBoard[y][x].setBackground(colorBlue);
     else
-     lblBoard[y][x].setBackground(ColorRed);
+     lblBoard[y][x].setBackground(colorRed);
 
    }
  }
