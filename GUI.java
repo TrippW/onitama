@@ -9,8 +9,8 @@ public class GUI implements MouseListener {
 	private JFrame frame;
 	private JPanel main, cards, board;
 	private JMenuBar menuBar;
-	private JMenu menu;
-	private JMenuItem menuPlayers, menuDifficulty, menuReset;
+	private JMenu menu, menuInfo;
+	private JMenuItem menuPlayers, menuDifficulty, menuReset, menuHelp;
 
 	private JLabel curPlayer;
 
@@ -25,7 +25,8 @@ public class GUI implements MouseListener {
 	private Color colorRed = new Color(0xf5544e);
 	private Color colorBlue = new Color(0x4e96f5);
 
-	public GUI(Card [] list, Board b) {
+	public GUI(Card [] list, Board b)
+	{
 		gameBoard = b;
 		if(b == null) {
 			System.out.println("Game board not initialized");
@@ -39,7 +40,8 @@ public class GUI implements MouseListener {
 		initGUIBoard();
 	}
 
-	public void initBar() {
+	public void initBar()
+	{
 		menuBar = new JMenuBar();
 		menu = new JMenu("Settings");
 		menu.setMnemonic(KeyEvent.VK_S);
@@ -63,6 +65,17 @@ public class GUI implements MouseListener {
 		menuDifficulty.addActionListener(new MenuListener());
 		menuDifficulty.setActionCommand("Difficulty");
 		menu.add(menuDifficulty);
+
+		menuInfo = new JMenu("?");
+		menuInfo.setMnemonic(KeyEvent.VK_I);
+		menu.getAccessibleContext().setAccessibleDescription("Help");
+		menuBar.add(menuInfo);
+
+		menuHelp = new JMenuItem("How to play");
+		menuHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.ALT_MASK));
+		menuHelp.addActionListener(new MenuListener());
+		menuHelp.setActionCommand("Help");
+		menuInfo.add(menuHelp);
 
 		frame.setJMenuBar(menuBar);
 	}
@@ -89,7 +102,8 @@ public class GUI implements MouseListener {
 			}
 	}
 
-	private void initFrame(Card [] list) {
+	private void initFrame(Card [] list)
+	{
 		GridBagLayout gridbag = new GridBagLayout();
 
 		main = new JPanel();
