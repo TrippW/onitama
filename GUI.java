@@ -25,8 +25,7 @@ public class GUI implements MouseListener {
 	private Color colorRed = new Color(0xf5544e);
 	private Color colorBlue = new Color(0x4e96f5);
 
-	public GUI(Card [] list, Board b)
-	{
+	public GUI(Card [] list, Board b) {
 		gameBoard = b;
 		if(b == null) {
 			System.out.println("Game board not initialized");
@@ -40,8 +39,7 @@ public class GUI implements MouseListener {
 		initGUIBoard();
 	}
 
-	public void initBar()
-	{
+	public void initBar() {
 		menuBar = new JMenuBar();
 		menu = new JMenu("Settings");
 		menu.setMnemonic(KeyEvent.VK_S);
