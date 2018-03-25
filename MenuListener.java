@@ -6,8 +6,7 @@ public class MenuListener implements ActionListener {
 	public MenuListener() {
 	}
 
-	public void actionPerformed(ActionEvent e)
-	{
+	public void actionPerformed(ActionEvent e) {
 		final String instructions = "To win you need to eliminate your opponents king piece or get your king piece to the opponents center square.\n" +
 				"First, click on one of the two cards on your side of the board. Then click on the piece you want to move.\n" +
 				"You can change either the card or the piece you want to use that turn before finalizing your move.\nTo finalize " +
@@ -15,9 +14,7 @@ public class MenuListener implements ActionListener {
 				"you used for the card in the center.\nGame continues until there is a winner.";
 		String input = "";
 		int count = -2;
-		switch(e.getActionCommand())
-		{
-
+		switch(e.getActionCommand()) {
 		case "Difficulty":
 			System.out.println("Set Difficulty...");
 			while(count < 0 || count > 2) {
