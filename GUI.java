@@ -100,8 +100,7 @@ public class GUI implements MouseListener {
 			}
 	}
 
-	private void initFrame(Card [] list)
-	{
+	private void initFrame(Card [] list) {
 		GridBagLayout gridbag = new GridBagLayout();
 
 		main = new JPanel();
