@@ -9,8 +9,8 @@ public class GUI implements MouseListener {
 	private JFrame frame;
 	private JPanel main, cards, board;
 	private JMenuBar menuBar;
-	private JMenu menu;
-	private JMenuItem menuPlayers, menuDifficulty, menuReset;
+	private JMenu menu, menuInfo;
+	private JMenuItem menuPlayers, menuDifficulty, menuReset, menuHelp;
 
 	private JLabel curPlayer;
 
@@ -63,6 +63,17 @@ public class GUI implements MouseListener {
 		menuDifficulty.addActionListener(new MenuListener());
 		menuDifficulty.setActionCommand("Difficulty");
 		menu.add(menuDifficulty);
+
+		menuInfo = new JMenu("?");
+		menuInfo.setMnemonic(KeyEvent.VK_I);
+		menu.getAccessibleContext().setAccessibleDescription("Help");
+		menuBar.add(menuInfo);
+
+		menuHelp = new JMenuItem("How to play");
+		menuHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.ALT_MASK));
+		menuHelp.addActionListener(new MenuListener());
+		menuHelp.setActionCommand("Help");
+		menuInfo.add(menuHelp);
 
 		frame.setJMenuBar(menuBar);
 	}
